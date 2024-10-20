@@ -1,0 +1,30 @@
+{
+  "name": "leaderboard-page",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Neelraj-Reddy/LeaderBoard-Page.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Neelraj-Reddy/LeaderBoard-Page/issues"
+  },
+  "homepage": "https://github.com/Neelraj-Reddy/LeaderBoard-Page#readme",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
+    "bootstrap": "^5.3.3",
+    "express": "^4.21.0",
+    "express-session": "^1.18.0",
+    "mysql2": "^3.11.2",
+    "react-bootstrap": "^2.10.5"
+  }
+}

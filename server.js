@@ -55,7 +55,7 @@ app.post('/login', (req, res) => {
     connection.query(query, [name], (err, results) => {
         if (err) {
             console.error('Database query error:', err);
-            return res.redirect('/?error=invalid');
+            return res.status(500).send('Error communicating with the database'); // Send a proper error response
         }
 
         if (results.length > 0) {
@@ -67,11 +67,11 @@ app.post('/login', (req, res) => {
                 res.redirect('/mentor'); // Redirect to protected route
             } else {
                 req.session.loggedIn = false;
-                res.redirect('/?error=invalid'); // Handle wrong password scenario
+                res.status(401).send('Invalid username or password'); // Send error response
             }
         } else {
             req.session.loggedIn = false;
-            res.redirect('/?error=invalid'); // Handle no user found scenario
+            res.status(401).send('Invalid username or password'); // Send error response
         }
     });
 });

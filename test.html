@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard | Neuronix</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            background-color: #0d0d0d; /* Dark background */
+            color: #f1f1f1; /* Light text for contrast */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center items */
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%; /* Full width */
+            padding: 20px;
+        }
+
+        h3 {
+            color: #20c997; /* Club accent color */
+            font-size: 2rem;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .club-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .club-info h1 {
+            font-size: 3rem;
+            margin-bottom: 5px;
+            color: #20c997; /* Sassy neon green */
+        }
+
+        .club-info p {
+            font-size: 1.2rem;
+            color: #cccccc; /* Soft grey for tagline */
+            font-style: italic;
+        }
+
+        /* Styled Dropdown and Search Bar */
+        .search-bar-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            width: 100%;
+            gap: 10px; /* Space between dropdown and search bar */
+        }
+
+        .form-select,
+        .form-control {
+            background-color: #1a1a1a;
+            border: 1px solid #20c997;
+            color: #f1f1f1;
+            transition: border-color 0.3s;
+            padding: 10px;
+            font-size: 1rem;
+            flex: 1; /* Grow to fill available space */
+            border-radius: 20px; /* Curvy outline */
+            outline: none; /* Remove default outline */
+        }
+
+        .form-select:hover,
+        .form-select:focus,
+        .form-control:hover,
+        .form-control:focus {
+            border-color: #20c997; /* Hover and focus effect */
+            background-color: #1a1a1a; /* Keep background color on focus */
+        }
+
+        .form-control::placeholder {
+            color: #bbb; /* Placeholder color */
+            opacity: 1; /* Override default opacity */
+        }
+
+        /* Stylish Table */
+        table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: separate; /* Use separate borders for gap effect */
+            border-spacing: 0 10px; /* Add vertical spacing between rows */
+            border-radius: 10px;
+            overflow: hidden; /* For rounded corners */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        }
+
+        th {
+            background-color: #1a1a1a;
+            color: #20c997; /* Accent color for headings */
+            font-weight: bold;
+            padding: 15px; /* Add padding for better spacing */
+            text-align: center; /* Center align for headings */
+        }
+
+        td {
+            padding: 12px; /* Add padding for better spacing */
+            text-align: center; /* Center align for aesthetic appeal */
+            transition: background-color 0.3s;
+        }
+
+        /* Alternating row colors */
+        tr:nth-child(even) {
+            background-color: #222; /* Darker shade for even rows */
+        }
+
+        tr:nth-child(odd) {
+            background-color: #1e1e1e; /* Slightly lighter shade for odd rows */
+        }
+
+        tr:hover td {
+            background-color: #333; /* Highlight row on hover */
+        }
+
+        /* Responsive design for mobile */
+        @media (max-width: 768px) {
+            .search-bar-container {
+                flex-direction: column; /* Stack dropdown and search bar on smaller screens */
+                align-items: center;
+            }
+
+            .form-select, .form-control {
+                width: 100%; /* Full width on small screens */
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="club-info">
+            <h1>Neuronix</h1>
+            <p>Innovating the future, one byte at a time.</p>
+        </div>
+
+        <!-- Search Bar and Dropdown -->
+        <div class="search-bar-container">
+            <select id="categoryDropdown" class="form-select" onchange="fetchData()">
+                <option value="All">All</option>
+                <option value="AIE">AIE</option>
+                <option value="OS">OS</option>
+                <option value="CYS">CYS</option>
+                <option value="CP">CP</option>
+            </select>
+
+            <input type="text" id="searchBar" class="form-control" placeholder="Search name..." oninput="filterTable()">
+        </div>
+
+        <!-- Heading for the active leaderboard -->
+        <h3 id="leaderboardHeading">Leaderboard: All</h3>
+
+        <!-- Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">Member ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Points</th>
+                </tr>
+            </thead>
+            <tbody id="memberTable">
+                <!-- Dynamic Rows will be added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let allMembers = []; // Store the complete dataset
+        let filteredMembers = []; // Store filtered dataset
+
+        // Fetch members data from backend based on selected category
+        function fetchData() {
+            const category = document.getElementById('categoryDropdown').value;
+            const heading = category === 'All' ? 'Leaderboard: All' : `Leaderboard: ${category}`;
+            document.getElementById('leaderboardHeading').innerText = heading;
+
+            axios.get(`/api/leaderboard?category=${category}`)
+                .then(response => {
+                    allMembers = response.data;
+                    filteredMembers = allMembers; // Initialize filtered data to all data
+                    calculateRanks(allMembers); // Calculate ranks based on all data
+                    renderTable(filteredMembers);
+                })
+                .catch(error => console.error(error));
+        }
+
+        // Calculate rank based on points
+        function calculateRanks(data) {
+            data.sort((a, b) => b.points - a.points); // Sort by points in descending order
+            data.forEach((member, index) => {
+                member.rank = index + 1; // Assign rank based on sorted position
+            });
+        }
+
+        // Render table with data and rank
+        function renderTable(data) {
+            const tableBody = document.getElementById('memberTable');
+            tableBody.innerHTML = ''; // Clear existing data
+
+            data.forEach(member => {
+                const row = `
+                    <tr>
+                        <td>${member.rank}</td>
+                        <td>${member.member_id}</td>
+                        <td>${member.name || 'N/A'}</td>
+                        <td>${member.points}</td>
+                    </tr>`;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        // Filter table based on search input
+        function filterTable() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            filteredMembers = allMembers.filter(member => 
+                member.name.toLowerCase().includes(searchTerm)
+            );
+            renderTable(filteredMembers);
+        }
+
+        // Initial fetch with default category
+        window.onload = function () {
+            fetchData(); // Fetch data with default category on page load
+        }
+    </script>
+</body>
+</html>

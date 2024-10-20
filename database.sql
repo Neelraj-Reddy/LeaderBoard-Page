@@ -20,10 +20,6 @@ create table member_points(member_id int, task_id int, task_points int);
 
 
 
-
-
-
-
 insert into authentication value('mentor','1234');
 
 insert into tasks value(1,'Numpy','AIE','Do a numpy code');

@@ -4,51 +4,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentor Dashboard</title>
+    <title>Mentor Dashboard - Neuronix</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <!-- Axios Library -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
-        .form-control,
-        .btn {
-            border-radius: 0.25rem;
+        body {
+            background-color: #121212;
+            color: #b0f7a6;
+            font-family: 'Arial', sans-serif;
+        }
+
+        h1 {
+            color: #39ff14;
         }
 
         .card {
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            background-color: #1e1e1e;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 255, 153, 0.2);
+        }
+
+        .card-header {
+            background-color: #39ff14;
+            color: black;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .btn-custom {
+            background-color: #39ff14;
+            color: black;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .btn-custom:hover {
+            background-color: #39ff05;
+            color: white;
+        }
+
+        .form-control,
+        .form-select {
+            background-color: #2a2a2a;
+            color: #39ff14;
+            border: 1px solid #39ff14;
+            border-radius: 8px;
+        }
+
+        .form-label {
+            color: #39ff14;
         }
 
         .form-group {
             margin-bottom: 1rem;
         }
 
-        .form-label {
-            font-weight: bold;
-        }
-
         .btn-custom {
-            background-color: #007bff;
-            color: #fff;
+            width: 100%;
         }
 
-        .btn-custom:hover {
-            background-color: #0056b3;
+        .list-group-item {
+            background-color: #2a2a2a;
+            color: #39ff14;
+            border: 1px solid #39ff14;
         }
+
+        .footer {
+            background-color: #121212;
+            color: #39ff14;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .container {
+            padding-bottom: 80px;
+        }
+
+        #member-details-result{
+            color: #39ff14;
+        }
+
     </style>
 </head>
 
 <body>
 
     <div class="container mt-5">
-        <h1 class="text-center mb-4 text-white bg-dark p-3">Mentor Dashboard</h1>
+        <h1 class="text-center mb-4">Mentor Dashboard - Neuronix</h1>
 
         <!-- Member Search Section -->
         <section id="member-search" class="mb-5">
-            <div class="card bg-info text-white">
+            <div class="card">
                 <div class="card-header">
-                    <h2 class="mb-3">Search Member</h2>
+                    <h2>Search Member</h2>
                 </div>
                 <div class="card-body">
                     <form id="member-search-form" class="row g-3">
@@ -69,12 +123,12 @@
 
         <!-- Add Member Section -->
         <section id="add-member" class="mb-5">
-            <div class="card bg-success text-white">
+            <div class="card">
                 <div class="card-header">
-                    <h2 class="mb-3">Add Member</h2>
+                    <h2>Add Member</h2>
                 </div>
                 <div class="card-body">
-                    <form id="add-member-form" method="POST" action="/api/add-member">
+                    <form id="add-member-form">
                         <div class="form-group">
                             <label for="member-id" class="form-label">Roll No</label>
                             <input type="text" id="member-id" name="member_id" class="form-control"
@@ -102,9 +156,9 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="mobile-number" class="form-label">Mobile Numbers</label>
+                            <label for="mobile-number" class="form-label">Mobile Number</label>
                             <input type="text" id="mobile-number" name="mobile_numbers" class="form-control"
-                                placeholder="Mobile Numbers" required>
+                                placeholder="Mobile Number" required>
                         </div>
                         <button type="submit" class="btn btn-custom">Add Member</button>
                     </form>
@@ -115,12 +169,12 @@
 
         <!-- Add Task Section -->
         <section id="add-task" class="mb-5">
-            <div class="card bg-warning text-dark">
+            <div class="card">
                 <div class="card-header">
-                    <h2 class="mb-3">Add Task</h2>
+                    <h2>Add Task</h2>
                 </div>
                 <div class="card-body">
-                    <form id="add-task-form" method="POST" action="/api/add-task">
+                    <form id="add-task-form">
                         <div class="form-group">
                             <label for="task-id" class="form-label">Task ID</label>
                             <input type="text" id="task-id" name="task_id" class="form-control" placeholder="Task ID"
@@ -134,7 +188,7 @@
                         <div class="form-group">
                             <label for="task-domain" class="form-label">Task Domain</label>
                             <select id="task-domain" name="task_domain" class="form-select" required>
-                                <option value="AIE">AI</option>
+                                <option value="AIE">AIE</option>
                                 <option value="CP">CP</option>
                                 <option value="CYS">CYS</option>
                                 <option value="OS">OS</option>
@@ -152,10 +206,11 @@
             </div>
         </section>
 
+        <!-- Update Points Section -->
         <section id="update-points" class="mb-5">
-            <div class="card bg-secondary text-white">
+            <div class="card">
                 <div class="card-header">
-                    <h2 class="mb-3">Update Points</h2>
+                    <h2>Update Points</h2>
                 </div>
                 <div class="card-body">
                     <form id="update-points-form">
@@ -179,23 +234,25 @@
                             <select id="update-task-name" name="task_id" class="form-select" required>
                                 <option value="">Select Task</option>
                             </select>
-                            <label for="update-points" class="form-label">Points</label>
-                            <input type="text" id="updatepoints" name="points" class="form-control"
+                        </div>
+                        <div class="form-group">
+                            <label for="updatepoints" class="form-label">Points</label>
+                            <input type="number" id="updatepoints" name="update_points" class="form-control"
                                 placeholder="Points" required>
                         </div>
-                        <button type="button" class="btn btn-custom" onclick="updatePoints()">Update Points</button>
+                        <button type="submit" class="btn btn-custom">Update Points</button>
                     </form>
                     <div id="update-points-result" class="mt-3"></div>
+                    <!-- This div will show success/error messages -->
                 </div>
             </div>
         </section>
-
-
     </div>
 
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <div class="footer">
+        <p>&copy; 2024 Neuronix Club</p>
+    </div>
+
     <script>
         // Auto-suggest member names as the user types
         document.getElementById('search-member-name').addEventListener('input', function () {
@@ -303,56 +360,64 @@
                 .catch(error => console.error('Error adding task:', error));
         });
 
-        function updatePoints() {
-            const memberId = document.getElementById('update-member-id').value;
-            const taskId = document.getElementById('update-task-name').value;
-            const points = document.getElementById('updatepoints').value; // Correct the variable name
+        // Function to handle updating points
+        function updatePoints(event) {
+            event.preventDefault();  // Prevent page refresh
 
-            // alert(memberId + " " + taskId + " " + points);
+            // Fetch input values from the form
+            const memberId = document.getElementById('update-member-id').value.trim();
+            const taskId = document.getElementById('update-task-name').value.trim();
+            const points = document.getElementById('updatepoints').value.trim();
+
             // Check if all fields are filled
             if (!memberId || !taskId || !points) {
-                alert('Please fill in all the fields');
+                document.getElementById('update-points-result').innerHTML = '<div class="alert alert-danger">Please fill in all the fields</div>';
                 return;
             }
 
+            // Prepare the data to be sent
             const data = {
                 member_id: memberId,
                 task_id: taskId,
-                points: points // Correct usage of points variable
+                points: points
             };
 
-            // Display an alert before submitting the data
-            alert('Submitting form with the following data:\n' + JSON.stringify(data));
-
+            // Make the API call to update points
             axios.post('/api/update-points', data)
                 .then(response => {
                     const resultDiv = document.getElementById('update-points-result');
 
-                    // Display alert showing the server's response
-                    alert('Response received: ' + JSON.stringify(response.data));
-
+                    // Handle success or error based on server response
                     if (response.data.success) {
                         resultDiv.innerHTML = '<div class="alert alert-success">Points updated successfully!</div>';
+                    } else if (response.data.error) {
+                        resultDiv.innerHTML = `<div class="alert alert-danger">${response.data.error}</div>`;
                     } else {
-                        resultDiv.innerHTML = '<div class="alert alert-danger">Error updating points!</div>';
+                        resultDiv.innerHTML = '<div class="alert alert-danger">Unknown error occurred while updating points</div>';
                     }
                 })
                 .catch(error => {
                     console.error('Error updating points:', error);
-                    alert('An error occurred: ' + error.message);
+                    document.getElementById('update-points-result').innerHTML = '<div class="alert alert-danger">An error occurred while updating points</div>';
                 });
         }
 
+        // Event listener for form submission
+        document.getElementById('update-points-form').addEventListener('submit', updatePoints);
+
+        // Event listener for task domain selection
         document.getElementById('update-task-domain').addEventListener('change', function () {
             const domain = this.value;
             const taskDropdown = document.getElementById('update-task-name');
 
+            // If domain is selected, fetch tasks for the domain
             if (domain) {
                 axios.get(`/api/tasks-by-domain?domain=${encodeURIComponent(domain)}`)
                     .then(response => {
                         const tasks = response.data.tasks;
                         taskDropdown.innerHTML = '<option value="">Select Task</option>';
 
+                        // Populate the task dropdown with the tasks for the selected domain
                         tasks.forEach(task => {
                             const option = document.createElement('option');
                             option.value = task.task_id;
@@ -366,6 +431,7 @@
             }
         });
 
+        // Optional: You can also handle the submission using a button click event if needed
         document.getElementById('submit-update-points').addEventListener('click', updatePoints);
 
 
