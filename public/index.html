@@ -19,16 +19,18 @@
             color: #f1f1f1;
             height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
             flex-direction: column;
-            text-align: center;
+            align-items: center;
             position: relative;
             padding: 20px;
         }
 
         header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 30px;
+            width: 100%;
         }
 
         h1 {
@@ -38,32 +40,28 @@
             text-transform: uppercase;
             letter-spacing: 5px;
             text-shadow: 0 0 10px rgba(57, 255, 20, 0.7);
-            overflow-wrap: break-word; /* Prevents overflow */
-            word-wrap: break-word; /* For older browsers */
-            overflow: hidden; /* Hides overflow */
+            overflow-wrap: break-word;
         }
 
         p.tagline {
             font-size: 1.2rem;
             color: #cccccc;
             font-style: italic;
-            margin-bottom: 50px;
-            overflow-wrap: break-word; /* Prevents overflow */
+            margin-bottom: 20px;
+            overflow-wrap: break-word;
         }
 
         .button-container {
             display: flex;
-            flex-direction: column; /* Change to column for small screens */
-            gap: 20px;
             justify-content: center;
+            gap: 20px;
             margin-bottom: 30px;
-            width: 100%; /* Full width for button container */
-            max-width: 400px; /* Limit width on larger screens */
-            margin: 0 auto; /* Center the container */
+            flex-wrap: wrap;
+            width: 100%;
         }
 
         .btn {
-            padding: 15px 20px; /* Adjusted padding for better fit */
+            padding: 15px 20px;
             border-radius: 50px;
             border: 2px solid #39ff14;
             background: none;
@@ -73,10 +71,9 @@
             text-transform: uppercase;
             transition: all 0.3s ease-in-out;
             cursor: pointer;
-            position: relative;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            width: 100%; /* Full width */
+            width: auto;
         }
 
         .btn:hover {
@@ -92,16 +89,16 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
             z-index: 10;
-            width: 100%; /* Full width */
-            max-width: 400px; /* Limit width on larger screens */
-            margin: 0 auto; /* Center the form */
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
         #loginForm h2 {
             margin-bottom: 20px;
             color: #39ff14;
-            font-size: 2.5rem; /* Smaller font size */
-            overflow-wrap: break-word; /* Prevents overflow */
+            font-size: 2.5rem;
+            overflow-wrap: break-word;
         }
 
         #loginForm input {
@@ -156,13 +153,31 @@
             padding: 10px;
         }
 
-        .logo {
-            margin-top: 50px;
+        .events-container {
+            margin-top: 40px;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+            position: relative;
         }
 
-        .logo img {
-            width: 120px;
-            height: auto;
+        .event-slide {
+            display: none;
+            text-align: center;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .event-image {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
 
         .cancel-btn {
@@ -174,7 +189,7 @@
             cursor: pointer;
             font-weight: bold;
             margin-top: 10px;
-            width: 100%; /* Full width */
+            width: 100%;
             transition: all 0.3s;
             box-shadow: 0 4px 8px rgba(255, 76, 76, 0.3);
         }
@@ -185,28 +200,41 @@
             box-shadow: 0 6px 12px rgba(255, 76, 76, 0.4);
         }
 
+        /* Navigation buttons for the slideshow */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            /* Space between buttons and the description */
+        }
+
+        .nav-btn {
+            padding: 10px;
+            border-radius: 50%;
+            border: none;
+            background-color: #39ff14;
+            color: #0d0d0d;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #32cc0d;
+            /* Slightly darker on hover */
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             h1 {
-                font-size: 3rem; /* Adjusted font size for smaller screens */
+                font-size: 3rem;
             }
 
             p.tagline {
-                font-size: 1rem; /* Smaller font size for tagline */
+                font-size: 1rem;
             }
 
             #loginForm h2 {
-                font-size: 2rem; /* Smaller font size for form heading */
-            }
-        }
-
-        @media (min-width: 768px) {
-            .button-container {
-                flex-direction: row; /* Change back to row for larger screens */
-            }
-
-            .btn {
-                width: auto; /* Auto width for buttons */
+                font-size: 2rem;
             }
         }
     </style>
@@ -216,12 +244,34 @@
     <header>
         <h1>Neuronix</h1>
         <p class="tagline">Innovating the future, one byte at a time.</p>
+        <div class="button-container">
+            <button class="btn" id="loginButton">Login</button>
+            <button class="btn" onclick="location.href='/leaderboard';">Leaderboard</button>
+            <button class="btn" onclick="location.href='/tasks';">Tasks</button>
+        </div>
     </header>
 
-    <div class="button-container">
-        <button class="btn" id="loginButton">Login</button>
-        <button class="btn" onclick="location.href='/leaderboard';">Leaderboard</button>
-        <button class="btn" onclick="location.href='/tasks';">Tasks</button>
+    <!-- Upcoming Events Section -->
+    <div class="events-container">
+        <h2>Upcoming Club Events</h2>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prevBtn">&lt;</button>
+            <button class="nav-btn" id="nextBtn">&gt;</button>
+        </div>
+
+        <div class="event-slide active">
+            <div>Event 1: Tech Talk on AI - Date: 25th October 2024</div>
+            <img src="MainAfter.jpg" alt="Tech Talk on AI" class="event-image">
+        </div>
+        <div class="event-slide">
+            <div>Event 2: Coding Workshop - Date: 30th October 2024</div>
+            <img src="h.jpg" alt="Coding Workshop" class="event-image">
+        </div>
+        <div class="event-slide">
+            <div>Event 3: Hackathon - Date: 5th November 2024</div>
+            <img src="images.jpeg" alt="Hackathon" class="event-image">
+        </div>
     </div>
 
     <div class="footer">
@@ -304,6 +354,37 @@
             document.getElementById('errorText').innerText = message;
             document.getElementById('errorMessage').style.display = 'block';
         }
+
+        // Slideshow functionality for upcoming events
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.event-slide');
+
+        // Ensure only one slide is visible
+        function showSlides(index) {
+            slides.forEach((slide, i) => {
+                slide.style.display = (i === index) ? 'block' : 'none';
+            });
+        }
+
+        function nextSlide() {
+            slideIndex = (slideIndex + 1) % slides.length;
+            showSlides(slideIndex);
+        }
+
+        function prevSlide() {
+            slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+            showSlides(slideIndex);
+        }
+
+        // Navigation button event listeners
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+        // Automatic slideshow with interval set to 8 seconds
+        setInterval(nextSlide, 3000);
+
+        // Initial display setup
+        showSlides(slideIndex);
     </script>
 </body>
 
