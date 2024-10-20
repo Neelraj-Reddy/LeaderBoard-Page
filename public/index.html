@@ -16,9 +16,7 @@
         body {
             font-family: 'Helvetica Neue', sans-serif;
             background-color: #0d0d0d;
-            /* Dark sleek background */
             color: #f1f1f1;
-            /* Minimal, sharp contrast */
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -27,7 +25,6 @@
             text-align: center;
             position: relative;
             padding: 20px;
-            /* Add some padding */
         }
 
         header {
@@ -36,35 +33,41 @@
 
         h1 {
             font-size: 4rem;
-            color: #39ff14; /* Vibrant neon green */
+            color: #39ff14;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 5px;
-            text-shadow: 0 0 10px rgba(57, 255, 20, 0.7); /* Subtle glow effect */
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.7);
+            overflow-wrap: break-word; /* Prevents overflow */
+            word-wrap: break-word; /* For older browsers */
+            overflow: hidden; /* Hides overflow */
         }
 
         p.tagline {
             font-size: 1.2rem;
-            color: #cccccc; /* Soft grey */
+            color: #cccccc;
             font-style: italic;
             margin-bottom: 50px;
+            overflow-wrap: break-word; /* Prevents overflow */
         }
 
-        /* Cool container for the buttons */
         .button-container {
             display: flex;
-            gap: 40px;
+            flex-direction: column; /* Change to column for small screens */
+            gap: 20px;
             justify-content: center;
             margin-bottom: 30px;
+            width: 100%; /* Full width for button container */
+            max-width: 400px; /* Limit width on larger screens */
+            margin: 0 auto; /* Center the container */
         }
 
-        /* Custom button style */
         .btn {
-            padding: 15px 40px;
+            padding: 15px 20px; /* Adjusted padding for better fit */
             border-radius: 50px;
-            border: 2px solid #39ff14; /* Vibrant neon green */
+            border: 2px solid #39ff14;
             background: none;
-            color: #39ff14; /* Vibrant neon green */
+            color: #39ff14;
             font-size: 1.1rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -72,63 +75,64 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 100%; /* Full width */
         }
 
         .btn:hover {
-            background-color: #39ff14; /* Vibrant neon green */
+            background-color: #39ff14;
             color: #0d0d0d;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Increased shadow on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
         }
 
-        /* Login form styling */
         #loginForm {
-            display: none; /* Hidden by default */
+            display: none;
             background-color: #1a1a1a;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
             z-index: 10;
-            width: 300px; /* Set a width for the form */
+            width: 100%; /* Full width */
+            max-width: 400px; /* Limit width on larger screens */
             margin: 0 auto; /* Center the form */
-            position: relative;
         }
 
         #loginForm h2 {
             margin-bottom: 20px;
-            color: #39ff14; /* Heading color */
+            color: #39ff14;
+            font-size: 2.5rem; /* Smaller font size */
+            overflow-wrap: break-word; /* Prevents overflow */
         }
 
         #loginForm input {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #39ff14; /* Vibrant neon green */
+            border: 1px solid #39ff14;
             border-radius: 5px;
             background-color: #333;
             color: #f1f1f1;
             transition: border-color 0.3s;
-            box-shadow: inset 0 0 5px rgba(57, 255, 20, 0.5); /* Inner shadow */
+            box-shadow: inset 0 0 5px rgba(57, 255, 20, 0.5);
         }
 
         #loginForm input:focus {
-            border-color: #39ff14; /* Vibrant neon green */
-            outline: none; /* Remove default outline */
+            border-color: #39ff14;
+            outline: none;
         }
 
-        /* Alert box styling */
         .alert {
-            background-color: #ff4c4c; /* Red background */
-            color: white; /* White text */
+            background-color: #ff4c4c;
+            color: white;
             padding: 15px;
             border-radius: 5px;
             margin-top: 10px;
-            display: none; /* Initially hidden */
-            width: 100%; /* Full width */
-            text-align: left; /* Left align text */
-            font-weight: bold; /* Bold text for visibility */
-            position: relative; /* For absolute positioning of close button */
-            box-shadow: 0 0 10px rgba(255, 76, 76, 0.5); /* Red glow effect */
+            display: none;
+            width: 100%;
+            text-align: left;
+            font-weight: bold;
+            position: relative;
+            box-shadow: 0 0 10px rgba(255, 76, 76, 0.5);
         }
 
         .alert .close-btn {
@@ -161,25 +165,49 @@
             height: auto;
         }
 
-        /* Cancel button style */
         .cancel-btn {
-            padding: 10px 20px; /* Adjust padding */
-            border-radius: 50px; /* Match button shape */
-            border: 2px solid #ff4c4c; /* Match border style */
-            background: none; /* No background */
-            color: #ff4c4c; /* Text color */
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 2px solid #ff4c4c;
+            background: none;
+            color: #ff4c4c;
             cursor: pointer;
             font-weight: bold;
             margin-top: 10px;
             width: 100%; /* Full width */
-            transition: all 0.3s; /* Smooth transition */
-            box-shadow: 0 4px 8px rgba(255, 76, 76, 0.3); /* Subtle shadow effect */
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(255, 76, 76, 0.3);
         }
 
         .cancel-btn:hover {
-            background-color: #ff4c4c; /* Background color on hover */
-            color: #0d0d0d; /* Text color on hover */
-            box-shadow: 0 6px 12px rgba(255, 76, 76, 0.4); /* Increased shadow on hover */
+            background-color: #ff4c4c;
+            color: #0d0d0d;
+            box-shadow: 0 6px 12px rgba(255, 76, 76, 0.4);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem; /* Adjusted font size for smaller screens */
+            }
+
+            p.tagline {
+                font-size: 1rem; /* Smaller font size for tagline */
+            }
+
+            #loginForm h2 {
+                font-size: 2rem; /* Smaller font size for form heading */
+            }
+        }
+
+        @media (min-width: 768px) {
+            .button-container {
+                flex-direction: row; /* Change back to row for larger screens */
+            }
+
+            .btn {
+                width: auto; /* Auto width for buttons */
+            }
         }
     </style>
 </head>

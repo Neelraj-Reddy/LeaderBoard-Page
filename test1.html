@@ -38,6 +38,9 @@
             text-transform: uppercase;
             letter-spacing: 5px;
             text-shadow: 0 0 10px rgba(57, 255, 20, 0.7);
+            overflow-wrap: break-word; /* Prevents overflow */
+            word-wrap: break-word; /* For older browsers */
+            overflow: hidden; /* Hides overflow */
         }
 
         p.tagline {
@@ -45,6 +48,7 @@
             color: #cccccc;
             font-style: italic;
             margin-bottom: 50px;
+            overflow-wrap: break-word; /* Prevents overflow */
         }
 
         .button-container {
@@ -96,6 +100,8 @@
         #loginForm h2 {
             margin-bottom: 20px;
             color: #39ff14;
+            font-size: 2.5rem; /* Smaller font size */
+            overflow-wrap: break-word; /* Prevents overflow */
         }
 
         #loginForm input {
@@ -159,27 +165,45 @@
             height: auto;
         }
 
-        .cancel-btn {
-            padding: 10px 20px;
-            border-radius: 50px;
-            border: 2px solid #ff4c4c;
-            background: none;
-            color: #ff4c4c;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 10px;
+        /* Upcoming Events Section */
+        .events-container {
+            margin-top: 40px;
             width: 100%; /* Full width */
-            transition: all 0.3s;
-            box-shadow: 0 4px 8px rgba(255, 76, 76, 0.3);
+            max-width: 600px; /* Limit width */
+            margin: 20px auto; /* Center the container */
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
         }
 
-        .cancel-btn:hover {
-            background-color: #ff4c4c;
-            color: #0d0d0d;
-            box-shadow: 0 6px 12px rgba(255, 76, 76, 0.4);
+        .event-slide {
+            display: none;
+            font-size: 1.2rem;
+            color: #39ff14;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .active {
+            display: block; /* Show active slide */
         }
 
         /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem; /* Adjusted font size for smaller screens */
+            }
+
+            p.tagline {
+                font-size: 1rem; /* Smaller font size for tagline */
+            }
+
+            #loginForm h2 {
+                font-size: 2rem; /* Smaller font size for form heading */
+            }
+        }
+
         @media (min-width: 768px) {
             .button-container {
                 flex-direction: row; /* Change back to row for larger screens */
@@ -197,6 +221,14 @@
         <h1>Neuronix</h1>
         <p class="tagline">Innovating the future, one byte at a time.</p>
     </header>
+
+    <!-- Upcoming Events Section -->
+    <div class="events-container">
+        <h2>Upcoming Club Events</h2>
+        <div class="event-slide active">Event 1: Tech Talk on AI - Date: 25th October 2024</div>
+        <div class="event-slide">Event 2: Coding Workshop - Date: 30th October 2024</div>
+        <div class="event-slide">Event 3: Hackathon - Date: 5th November 2024</div>
+    </div>
 
     <div class="button-container">
         <button class="btn" id="loginButton">Login</button>
@@ -231,59 +263,34 @@
         // Cancel button functionality
         document.getElementById('cancelLogin').addEventListener('click', () => {
             document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('errorMessage').style.display = 'none'; // Hide alert on close
-            document.getElementById('username').value = ''; // Clear username
-            document.getElementById('password').value = ''; // Clear password
+            document.getElementById('errorMessage').style.display = 'none'; // Hide alert on cancel
         });
 
-        // Close alert functionality
+        // Close alert message
         document.getElementById('closeAlert').addEventListener('click', () => {
-            document.getElementById('errorMessage').style.display = 'none'; // Hide alert on close
+            document.getElementById('errorMessage').style.display = 'none';
         });
 
-        // Submit login form
-        document.getElementById('submitLogin').addEventListener('click', async () => {
-            const name = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
+        // Slideshow for Upcoming Events
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.event-slide');
 
-            // Check for empty fields
-            if (!name || !password) {
-                showError('Please enter both username and password.');
-                return;
-            }
-
-            const formData = new URLSearchParams();
-            formData.append('name', name);
-            formData.append('password', password);
-
-            try {
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    if (response.redirected) {
-                        window.location.href = response.url; // Redirect on successful login
-                    } else {
-                        const result = await response.text();
-                        showError(result); // Show any messages from the server
-                    }
-                } else {
-                    const errorText = await response.text();
-                    showError(errorText || 'Login failed. Please check your credentials.');
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
                 }
-            } catch (error) {
-                console.error('Login error:', error);
-                showError('An error occurred. Please try again.');
-            }
-        });
-
-        // Helper function to show error message
-        function showError(message) {
-            document.getElementById('errorText').innerText = message;
-            document.getElementById('errorMessage').style.display = 'block';
+            });
         }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Change slide every 5 seconds
+        setInterval(nextSlide, 5000);
     </script>
 </body>
 
