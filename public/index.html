@@ -223,6 +223,54 @@
             /* Slightly darker on hover */
         }
 
+        .events-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            position: relative;
+            right: 0;
+            top: 0;
+        }
+
+        .nav-btn {
+            padding: 8px;
+            border-radius: 50%;
+            border: none;
+            background-color: #39ff14;
+            color: #0d0d0d;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #32cc0d;
+            /* Slightly darker on hover */
+        }
+
+        .event-description {
+            background-color: #121212;
+            /* Dark background to match theme */
+            padding: 15px;
+            border-radius: 10px;
+            color: #f1f1f1;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            /* Subtle shadow for depth */
+            border-left: 4px solid #39ff14;
+            /* Left border for decoration */
+            text-align: center;
+        }
+
+
+
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             h1 {
@@ -251,28 +299,29 @@
         </div>
     </header>
 
-    <!-- Upcoming Events Section -->
     <div class="events-container">
-        <h2>Upcoming Club Events</h2>
-
-        <div class="nav-buttons">
-            <button class="nav-btn" id="prevBtn">&lt;</button>
-            <button class="nav-btn" id="nextBtn">&gt;</button>
+        <div class="events-header">
+            <h2>Upcoming Club Events</h2>
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn">&lt;</button>
+                <button class="nav-btn" id="nextBtn">&gt;</button>
+            </div>
         </div>
 
         <div class="event-slide active">
-            <div>Event 1: Tech Talk on AI - Date: 25th October 2024</div>
+            <div class="event-description">Event 1: Tech Talk on AI - Date: 25th October 2024</div>
             <img src="MainAfter.jpg" alt="Tech Talk on AI" class="event-image">
         </div>
         <div class="event-slide">
-            <div>Event 2: Coding Workshop - Date: 30th October 2024</div>
+            <div class="event-description">Event 2: Coding Workshop - Date: 30th October 2024</div>
             <img src="h.jpg" alt="Coding Workshop" class="event-image">
         </div>
         <div class="event-slide">
-            <div>Event 3: Hackathon - Date: 5th November 2024</div>
+            <div class="event-description">Event 3: Hackathon - Date: 5th November 2024</div>
             <img src="images.jpeg" alt="Hackathon" class="event-image">
         </div>
     </div>
+
 
     <div class="footer">
         <p>&copy; 2024 Neuronix Club</p>
