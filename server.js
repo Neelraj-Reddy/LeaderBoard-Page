@@ -310,6 +310,28 @@ app.post('/api/update-points', (req, res) => {
     });
 });
 
+app.get('/api/events', (req, res) => {
+    const sql = 'SELECT event_name, event_date, image_link FROM events';
+    
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ error: err.message });
+        }
+
+        // Add the full image path for each event
+        const events = results.map(event => ({
+            event_name: event.event_name,
+            event_date: event.event_date,
+            image_path: `event_images/${event.image_link}` // Create full path to the image
+        }));
+
+        console.log(events)
+
+        res.json({ events });
+    });
+});
+
 
 // Start the server
 app.listen(port, () => {

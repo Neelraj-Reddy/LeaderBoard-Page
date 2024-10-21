@@ -268,6 +268,13 @@
             text-align: center;
         }
 
+        .event-slide {
+            display: none;
+        }
+
+        .event-slide.active {
+            display: block;
+        }
 
 
 
@@ -307,21 +314,10 @@
                 <button class="nav-btn" id="nextBtn">&gt;</button>
             </div>
         </div>
-
-        <div class="event-slide active">
-            <div class="event-description">Event 1: Tech Talk on AI - Date: 25th October 2024</div>
-            <img src="MainAfter.jpg" alt="Tech Talk on AI" class="event-image">
-        </div>
-        <div class="event-slide">
-            <div class="event-description">Event 2: Coding Workshop - Date: 30th October 2024</div>
-            <img src="h.jpg" alt="Coding Workshop" class="event-image">
-        </div>
-        <div class="event-slide">
-            <div class="event-description">Event 3: Hackathon - Date: 5th November 2024</div>
-            <img src="images.jpeg" alt="Hackathon" class="event-image">
+        <div id="eventSlides">
+            <!-- Event slides will be dynamically inserted here -->
         </div>
     </div>
-
 
     <div class="footer">
         <p>&copy; 2024 Neuronix Club</p>
@@ -404,36 +400,71 @@
             document.getElementById('errorMessage').style.display = 'block';
         }
 
-        // Slideshow functionality for upcoming events
         let slideIndex = 0;
-        const slides = document.querySelectorAll('.event-slide');
+        let slides;
 
-        // Ensure only one slide is visible
+        // Fetch and display events
+        async function fetchEvents() {
+            try {
+                const response = await fetch('/api/events');
+                const data = await response.json();
+                const events = data.events;
+
+                const eventSlidesContainer = document.getElementById('eventSlides');
+                eventSlidesContainer.innerHTML = ''; // Clear existing content
+
+                events.forEach((event, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = `event-slide ${index === 0 ? 'active' : ''}`;
+                    slide.innerHTML = `
+                    <div class="event-description">${event.event_name} - Date: ${new Date(event.event_date).toLocaleDateString()}</div>
+                    <img src="${event.image_path}" alt="${event.event_name}" class="event-image">
+                `;
+                    eventSlidesContainer.appendChild(slide);
+                });
+
+                // Update slides variable after adding new slides
+                slides = document.querySelectorAll('.event-slide');
+                showSlides(slideIndex);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        }
+
         function showSlides(index) {
+            if (!slides || slides.length === 0) return;
+
+            if (index >= slides.length) {
+                slideIndex = 0;
+            } else if (index < 0) {
+                slideIndex = slides.length - 1;
+            } else {
+                slideIndex = index;
+            }
+
             slides.forEach((slide, i) => {
-                slide.style.display = (i === index) ? 'block' : 'none';
+                slide.style.display = (i === slideIndex) ? 'block' : 'none';
             });
         }
 
         function nextSlide() {
-            slideIndex = (slideIndex + 1) % slides.length;
-            showSlides(slideIndex);
+            showSlides(slideIndex + 1);
         }
 
         function prevSlide() {
-            slideIndex = (slideIndex - 1 + slides.length) % slides.length;
-            showSlides(slideIndex);
+            showSlides(slideIndex - 1);
         }
 
-        // Navigation button event listeners
-        document.getElementById('nextBtn').addEventListener('click', nextSlide);
-        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+        // Set up event listeners after DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchEvents();
 
-        // Automatic slideshow with interval set to 8 seconds
-        setInterval(nextSlide, 3000);
+            document.getElementById('nextBtn').addEventListener('click', nextSlide);
+            document.getElementById('prevBtn').addEventListener('click', prevSlide);
 
-        // Initial display setup
-        showSlides(slideIndex);
+            // Automatic slideshow
+            setInterval(nextSlide, 5000); // Change slide every 5 seconds
+        });
     </script>
 </body>
 
