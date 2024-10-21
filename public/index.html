@@ -254,44 +254,85 @@
         }
 
         .event-description {
-            background-color: #121212;
-            /* Dark background to match theme */
-            padding: 15px;
-            border-radius: 10px;
-            color: #f1f1f1;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            /* Subtle shadow for depth */
-            border-left: 4px solid #39ff14;
-            /* Left border for decoration */
-            text-align: center;
-        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(57, 255, 20, 0.1);
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        font-family: 'Arial', sans-serif;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+    }
 
-        .event-slide {
-            display: none;
-        }
+    .event-name, .event-date {
+        flex: 1;
+        padding: 0 15px;
+    }
 
-        .event-slide.active {
-            display: block;
-        }
+    .event-name {
+        text-align: right;
+        font-weight: bold;
+        color: #39ff14;
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+    }
 
+    .event-date {
+        text-align: left;
+        color: #f1f1f1;
+    }
 
+    .event-separator {
+        font-size: 1.5em;
+        color: #39ff14;
+        margin: 0 10px;
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+    }
+
+    .event-image {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .event-image:hover {
+        transform: scale(1.02);
+    }
+
+    .slide-timer {
+        width: 100%;
+        height: 5px;
+        background-color: rgba(57, 255, 20, 0.2);
+        position: relative;
+        overflow: hidden;
+        border-radius: 2.5px;
+    }
+
+    .timer-bar {
+        width: 0;
+        height: 100%;
+        background-color: #39ff14;
+        transition: width 0.1s linear;
+        box-shadow: 0 0 10px rgba(57, 255, 20, 0.7);
+    }
 
         /* Responsive Styles */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 3rem;
-            }
-
-            p.tagline {
-                font-size: 1rem;
-            }
-
-            #loginForm h2 {
-                font-size: 2rem;
-            }
+        .event-description {
+            flex-direction: column;
         }
+
+        .event-name, .event-date {
+            text-align: center;
+            padding: 5px 0;
+        }
+
+        .event-separator {
+            display: none;
+        }
+    }
     </style>
 </head>
 
@@ -316,6 +357,9 @@
         </div>
         <div id="eventSlides">
             <!-- Event slides will be dynamically inserted here -->
+        </div>
+        <div class="slide-timer">
+            <div class="timer-bar"></div>
         </div>
     </div>
 
@@ -402,34 +446,41 @@
 
         let slideIndex = 0;
         let slides;
+        let timerBar;
+        let timerInterval;
+        const slideDuration = 10000; // 5 seconds per slide
 
         // Fetch and display events
         async function fetchEvents() {
-            try {
-                const response = await fetch('/api/events');
-                const data = await response.json();
-                const events = data.events;
+        try {
+            const response = await fetch('/api/events');
+            const data = await response.json();
+            const events = data.events;
 
-                const eventSlidesContainer = document.getElementById('eventSlides');
-                eventSlidesContainer.innerHTML = ''; // Clear existing content
+            const eventSlidesContainer = document.getElementById('eventSlides');
+            eventSlidesContainer.innerHTML = ''; // Clear existing content
 
-                events.forEach((event, index) => {
-                    const slide = document.createElement('div');
-                    slide.className = `event-slide ${index === 0 ? 'active' : ''}`;
-                    slide.innerHTML = `
-                    <div class="event-description">${event.event_name} - Date: ${new Date(event.event_date).toLocaleDateString()}</div>
+            events.forEach((event, index) => {
+                const slide = document.createElement('div');
+                slide.className = `event-slide ${index === 0 ? 'active' : ''}`;
+                slide.innerHTML = `
+                    <div class="event-description">
+                        <div class="event-name">${event.event_name}</div>
+                        <div class="event-separator">|</div>
+                        <div class="event-date">${new Date(event.event_date).toLocaleDateString()}</div>
+                    </div>
                     <img src="${event.image_path}" alt="${event.event_name}" class="event-image">
                 `;
-                    eventSlidesContainer.appendChild(slide);
-                });
+                eventSlidesContainer.appendChild(slide);
+            });
 
-                // Update slides variable after adding new slides
-                slides = document.querySelectorAll('.event-slide');
-                showSlides(slideIndex);
-            } catch (error) {
-                console.error('Error fetching events:', error);
-            }
+            // Update slides variable after adding new slides
+            slides = document.querySelectorAll('.event-slide');
+            showSlides(slideIndex);
+        } catch (error) {
+            console.error('Error fetching events:', error);
         }
+    }
 
         function showSlides(index) {
             if (!slides || slides.length === 0) return;
@@ -445,6 +496,9 @@
             slides.forEach((slide, i) => {
                 slide.style.display = (i === slideIndex) ? 'block' : 'none';
             });
+
+            // Reset and start the timer
+            resetTimer();
         }
 
         function nextSlide() {
@@ -455,15 +509,39 @@
             showSlides(slideIndex - 1);
         }
 
-        // Set up event listeners after DOM is loaded
+        function resetTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            timerBar.style.width = '0%';
+
+            let startTime = Date.now();
+            timerInterval = setInterval(() => {
+                let elapsedTime = Date.now() - startTime;
+                let progress = (elapsedTime / slideDuration) * 100;
+                timerBar.style.width = `${progress}%`;
+
+                if (progress >= 100) {
+                    nextSlide();
+                }
+            }, 50); // Update every 50ms for smooth animation
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             fetchEvents();
+            timerBar = document.querySelector('.timer-bar');
 
-            document.getElementById('nextBtn').addEventListener('click', nextSlide);
-            document.getElementById('prevBtn').addEventListener('click', prevSlide);
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                nextSlide();
+                resetTimer();
+            });
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                prevSlide();
+                resetTimer();
+            });
 
-            // Automatic slideshow
-            setInterval(nextSlide, 5000); // Change slide every 5 seconds
+            // Initial timer start
+            resetTimer();
         });
     </script>
 </body>
