@@ -86,10 +86,9 @@
             padding-bottom: 80px;
         }
 
-        #member-details-result{
+        #member-details-result {
             color: #39ff14;
         }
-
     </style>
 </head>
 
@@ -247,6 +246,37 @@
                 </div>
             </div>
         </section>
+
+        <!-- Add Event Section -->
+<section id="add-event" class="mb-5">
+    <div class="card">
+        <div class="card-header">
+            <h2>Add Event</h2>
+        </div>
+        <div class="card-body">
+            <form id="add-event-form">
+                <div class="form-group">
+                    <label for="event-name" class="form-label">Event Name</label>
+                    <input type="text" id="event-name" name="event_name" class="form-control" placeholder="Event Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-date" class="form-label">Event Date</label>
+                    <input type="date" id="event-date" name="event_date" class="form-control" placeholder="YYYY-MM-DD" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-image" class="form-label">Upload Event Image</label>
+                    <input type="file" id="event-image" name="event_image" class="form-control" accept="image/*" required>
+                </div>
+                <!-- Image Preview -->
+                <div class="mt-3">
+                    <img id="image-preview" src="" alt="Event Image Preview" style="max-width: 100%; height: auto; display: none; border: 1px solid #39ff14;">
+                </div>
+                <button type="submit" class="btn btn-custom mt-3">Add Event</button>
+            </form>
+            <div id="add-event-result" class="mt-3"></div>
+        </div>
+    </div>
+</section>
     </div>
 
     <div class="footer">
@@ -434,8 +464,59 @@
         // Optional: You can also handle the submission using a button click event if needed
         document.getElementById('submit-update-points').addEventListener('click', updatePoints);
 
+        // Preview the uploaded image
+    document.getElementById('event-image').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imagePreview = document.getElementById('image-preview');
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';  // Make the preview visible
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
+    // Add Event form submission
+    document.getElementById('add-event-form').addEventListener('submit', function (event) {
+        event.preventDefault();
 
+        const eventName = document.getElementById('event-name').value.trim();
+        const eventDate = document.getElementById('event-date').value;
+        const eventImage = document.getElementById('event-image').files[0];
+
+        if (!eventName || !eventDate || !eventImage) {
+            document.getElementById('add-event-result').innerHTML = '<div class="alert alert-danger">Please fill in all the fields and upload an image</div>';
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('event_name', eventName);
+        formData.append('event_date', eventDate);
+        formData.append('event_image', eventImage);
+
+        // Sending the form data to the server using axios
+        axios.post('/api/add-event', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(response => {
+            const resultDiv = document.getElementById('add-event-result');
+            if (response.data.success) {
+                resultDiv.innerHTML = '<div class="alert alert-success">Event added successfully!</div>';
+                document.getElementById('add-event-form').reset();
+                document.getElementById('image-preview').style.display = 'none';  // Hide the preview after submission
+            } else {
+                resultDiv.innerHTML = `<div class="alert alert-danger">${response.data.message}</div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error adding event:', error);
+            document.getElementById('add-event-result').innerHTML = '<div class="alert alert-danger">An error occurred while adding the event</div>';
+        });
+    });
     </script>
 </body>
 

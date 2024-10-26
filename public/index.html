@@ -346,6 +346,19 @@
             <button class="btn" onclick="location.href='/tasks';">Tasks</button>
         </div>
     </header>
+    
+    <!-- Login Form -->
+    <div id="loginForm">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button class="btn" id="submitLogin">Submit</button>
+        <button class="cancel-btn" id="cancelLogin">Cancel</button>
+        <div class="alert" id="errorMessage">
+            <button class="close-btn" id="closeAlert">&times;</button>
+            <span id="errorText"></span>
+        </div>
+    </div>
 
     <div class="events-container">
         <div class="events-header">
@@ -367,18 +380,7 @@
         <p>&copy; 2024 Neuronix Club</p>
     </div>
 
-    <!-- Login Form -->
-    <div id="loginForm">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Username" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <button class="btn" id="submitLogin">Submit</button>
-        <button class="cancel-btn" id="cancelLogin">Cancel</button>
-        <div class="alert" id="errorMessage">
-            <button class="close-btn" id="closeAlert">&times;</button>
-            <span id="errorText"></span>
-        </div>
-    </div>
+    
 
     <script>
         // Show login form on button click

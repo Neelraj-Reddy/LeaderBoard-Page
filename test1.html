@@ -4,80 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuronix | The Technical Club</title>
+    <title>Mentor Dashboard - Neuronix</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Axios Library -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
-        /* General reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Helvetica Neue', sans-serif;
-            background-color: #0d0d0d;
-            color: #f1f1f1;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            padding: 20px;
-        }
-
-        header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 30px;
-            width: 100%;
+            background-color: #121212;
+            color: #b0f7a6;
+            font-family: 'Arial', sans-serif;
         }
 
         h1 {
-            font-size: 4rem;
             color: #39ff14;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            text-shadow: 0 0 10px rgba(57, 255, 20, 0.7);
         }
 
-        p.tagline {
-            font-size: 1.2rem;
-            color: #cccccc;
-            font-style: italic;
-            margin-bottom: 20px;
+        .card {
+            background-color: #1e1e1e;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 255, 153, 0.2);
         }
 
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+        .card-header {
+            background-color: #39ff14;
+            color: black;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .btn-custom {
+            background-color: #39ff14;
+            color: black;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .btn-custom:hover {
+            background-color: #39ff05;
+            color: white;
+        }
+
+        .form-control,
+        .form-select {
+            background-color: #2a2a2a;
+            color: #39ff14;
+            border: 1px solid #39ff14;
+            border-radius: 8px;
+        }
+
+        .form-label {
+            color: #39ff14;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .btn-custom {
             width: 100%;
         }
 
-        .btn {
-            padding: 15px 20px;
-            border-radius: 50px;
-            border: 2px solid #39ff14;
-            background: none;
+        .list-group-item {
+            background-color: #2a2a2a;
             color: #39ff14;
-            font-size: 1.1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            transition: all 0.3s ease-in-out;
-            cursor: pointer;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            width: auto;
-        }
-
-        .btn:hover {
-            background-color: #39ff14;
-            color: #0d0d0d;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            border: 1px solid #39ff14;
         }
 
         .footer {
@@ -90,154 +82,358 @@
             padding: 10px;
         }
 
-        .events-container {
-            margin-top: 40px;
-            width: 100%;
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #1a1a1a;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-            position: relative;
+        .container {
+            padding-bottom: 80px;
         }
 
-        .event-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .event-description-container {
-            background-color: #2a2a2a;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
-        }
-
-        .event-slide {
-            display: none;
-            text-align: center;
-        }
-
-        .active {
-            display: block;
-        }
-
-        .event-image {
-            width: 100%;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        /* Dedicated container for navigation buttons */
-        .nav-container {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .nav-btn {
-            padding: 10px;
-            border-radius: 50%;
-            border: none;
-            background-color: #39ff14;
-            color: #0d0d0d;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .nav-btn:hover {
-            background-color: #32cc0d; /* Slightly darker on hover */
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 3rem;
-            }
-
-            p.tagline {
-                font-size: 1rem;
-            }
+        #member-details-result {
+            color: #39ff14;
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <h1>Neuronix</h1>
-        <p class="tagline">Innovating the future, one byte at a time.</p>
-        <div class="button-container">
-            <button class="btn" id="loginButton">Login</button>
-            <button class="btn" onclick="location.href='/leaderboard';">Leaderboard</button>
-            <button class="btn" onclick="location.href='/tasks';">Tasks</button>
-        </div>
-    </header>
 
-     <!-- Upcoming Events Section -->
-     <div class="events-container">
-        <div class="event-header">
-            <h2>Upcoming Club Events</h2>
-            <div class="nav-container">
-                <button class="nav-btn" id="prevBtn">&lt;</button>
-                <button class="nav-btn" id="nextBtn">&gt;</button>
-            </div>
-        </div>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Mentor Dashboard - Neuronix</h1>
 
-        <div class="event-slide active">
-            <div class="event-description-container">
-                Event 1: Tech Talk on AI - Date: 25th October 2024
+        <!-- Member Search Section -->
+        <section id="member-search" class="mb-5">
+            <div class="card">
+                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapse-search" aria-expanded="true" aria-controls="collapse-search" style="cursor: pointer;">
+                    <h2>Search Member</h2>
+                </div>
+                <div id="collapse-search" class="collapse show">
+                    <div class="card-body">
+                        <form id="member-search-form" class="row g-3">
+                            <div class="col-md-9 position-relative">
+                                <label for="search-member-name" class="form-label">Member Name</label>
+                                <input type="text" class="form-control" id="search-member-name" name="search-member-name" autocomplete="off" required>
+                                <div id="name-suggestions" class="list-group position-absolute w-100 mt-1"></div>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-custom">Search</button>
+                            </div>
+                        </form>
+                        <div id="member-details-result" class="mt-3"></div>
+                    </div>
+                </div>
             </div>
-            <img src="MainAfter.jpg" alt="Tech Talk on AI" class="event-image">
-        </div>
-        <div class="event-slide">
-            <div class="event-description-container">
-                Event 2: Coding Workshop - Date: 30th October 2024
+        </section>
+
+        <!-- Add Member Section -->
+        <section id="add-member" class="mb-5">
+            <div class="card">
+                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapse-add-member" aria-expanded="true" aria-controls="collapse-add-member" style="cursor: pointer;">
+                    <h2>Add Member</h2>
+                </div>
+                <div id="collapse-add-member" class="collapse show">
+                    <div class="card-body">
+                        <form id="add-member-form">
+                            <div class="form-group">
+                                <label for="member-id" class="form-label">Roll No</label>
+                                <input type="text" id="member-id" name="member_id" class="form-control" placeholder="Roll No" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="member-name" class="form-label">Member Name</label>
+                                <input type="text" id="member-name" name="member_name" class="form-control" placeholder="Member Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="year-of-study" class="form-label">Year of Study</label>
+                                <select id="year-of-study" name="year_of_study" class="form-select" required>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select id="gender" name="gender" class="form-select" required>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="mobile-number" class="form-label">Mobile Number</label>
+                                <input type="text" id="mobile-number" name="mobile_numbers" class="form-control" placeholder="Mobile Number" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom">Add Member</button>
+                        </form>
+                        <div id="add-member-result" class="mt-3"></div>
+                    </div>
+                </div>
             </div>
-            <img src="h.jpg" alt="Coding Workshop" class="event-image">
-        </div>
-        <div class="event-slide">
-            <div class="event-description-container">
-                Event 3: Hackathon - Date: 5th November 2024
+        </section>
+
+        <!-- Add Task Section -->
+        <section id="add-task" class="mb-5">
+            <div class="card">
+                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapse-add-task" aria-expanded="true" aria-controls="collapse-add-task" style="cursor: pointer;">
+                    <h2>Add Task</h2>
+                </div>
+                <div id="collapse-add-task" class="collapse show">
+                    <div class="card-body">
+                        <form id="add-task-form">
+                            <div class="form-group">
+                                <label for="task-id" class="form-label">Task ID</label>
+                                <input type="text" id="task-id" name="task_id" class="form-control" placeholder="Task ID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-name" class="form-label">Task Name</label>
+                                <input type="text" id="task-name" name="task_name" class="form-control" placeholder="Task Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-domain" class="form-label">Task Domain</label>
+                                <select id="task-domain" name="task_domain" class="form-select" required>
+                                    <option value="AIE">AIE</option>
+                                    <option value="CP">CP</option>
+                                    <option value="CYS">CYS</option>
+                                    <option value="OS">OS</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-description" class="form-label">Task Description</label>
+                                <textarea id="task-description" name="task_description" class="form-control" rows="3" placeholder="Task Description" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-custom">Add Task</button>
+                        </form>
+                        <div id="add-task-result" class="mt-3"></div>
+                    </div>
+                </div>
             </div>
-            <img src="images.jpeg" alt="Hackathon" class="event-image">
-        </div>
+        </section>
+
+        <!-- Update Points Section -->
+        <section id="update-points" class="mb-5">
+            <div class="card">
+                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapse-update-points" aria-expanded="true" aria-controls="collapse-update-points" style="cursor: pointer;">
+                    <h2>Update Points</h2>
+                </div>
+                <div id="collapse-update-points" class="collapse show">
+                    <div class="card-body">
+                        <form id="update-points-form">
+                            <div class="form-group">
+                                <label for="update-member-id" class="form-label">Roll No</label>
+                                <input type="text" id="update-member-id" name="member_id" class="form-control" placeholder="Roll No" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="update-task-domain" class="form-label">Task Domain</label>
+                                <select id="update-task-domain" name="task_domain" class="form-select" required>
+                                    <option value="AIE">AIE</option>
+                                    <option value="CP">CP</option>
+                                    <option value="CYS">CYS</option>
+                                    <option value="OS">OS</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="update-task-name" class="form-label">Task Name</label>
+                                <input type="text" id="update-task-name" name="task_name" class="form-control" placeholder="Task Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="points" class="form-label">Points</label>
+                                <input type="number" id="points" name="points" class="form-control" placeholder="Points" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom">Update Points</button>
+                        </form>
+                        <div id="update-points-result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 
-    <div class="footer">
-        <p>&copy; 2024 Neuronix Club</p>
-    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        Neuronix &copy; 2024
+    </footer>
 
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let slideIndex = 0;
-        const slides = document.querySelectorAll('.event-slide');
+        // Auto-suggest member names as the user types
+        document.getElementById('search-member-name').addEventListener('input', function () {
+            const query = this.value;
 
-        function showSlides(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.toggle('active', i === index);
-            });
+            if (query.length >= 2) {  // Only suggest after 2 characters
+                axios.get(`/api/search-members?query=${encodeURIComponent(query)}`)
+                    .then(response => {
+                        const suggestions = response.data.members;
+                        const suggestionBox = document.getElementById('name-suggestions');
+                        suggestionBox.innerHTML = '';
+
+                        suggestions.forEach(member => {
+                            const item = document.createElement('a');
+                            item.href = "#";
+                            item.classList.add('list-group-item', 'list-group-item-action');
+                            item.textContent = member.member_name;
+                            item.onclick = function () {
+                                document.getElementById('search-member-name').value = member.member_name;
+                                suggestionBox.innerHTML = '';
+                            };
+                            suggestionBox.appendChild(item);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching suggestions:', error));
+            } else {
+                document.getElementById('name-suggestions').innerHTML = '';
+            }
+        });
+
+        // Fetch member details on form submission
+        document.getElementById('member-search-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const memberName = document.getElementById('search-member-name').value;
+
+            axios.get(`/api/get-member-details?name=${encodeURIComponent(memberName)}`)
+                .then(response => {
+                    const member = response.data.member;
+                    const resultDiv = document.getElementById('member-details-result');
+                    resultDiv.innerHTML = `
+                    <p><strong>Roll No:</strong> ${member.member_id}</p>
+                    <p><strong>Year of Study:</strong> ${member.year_of_study}</p>
+                    <p><strong>Mobile Number:</strong> ${member.mobile_numbers}</p>
+                    <p><strong>Gender:</strong> ${member.gender}</p>
+                `;
+                })
+                .catch(error => console.error('Error fetching member details:', error));
+        });
+
+        // Add member form submission
+        document.getElementById('add-member-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const memberId = document.getElementById('member-id').value.trim().toLowerCase();
+            const memberName = document.getElementById('member-name').value.trim();
+            const yearOfStudy = document.getElementById('year-of-study').value;
+            const gender = document.getElementById('gender').value;
+            const mobileNumber = document.getElementById('mobile-number').value.trim();
+
+            console.log('Form data:', { memberId, memberName, yearOfStudy, gender, mobileNumber });
+
+            axios.post('/api/add-member', {
+                member_id: memberId,
+                member_name: memberName,
+                year_of_study: yearOfStudy,
+                gender: gender,
+                mobile_numbers: mobileNumber
+            })
+                .then(response => {
+                    const resultDiv = document.getElementById('add-member-result');
+                    if (response.data.exists) {
+                        resultDiv.innerHTML = '<div class="alert alert-danger">Member already exists!</div>';
+                    } else {
+                        resultDiv.innerHTML = '<div class="alert alert-success">Member added successfully!</div>';
+                    }
+                })
+                .catch(error => console.error('Error adding member:', error));
+        });
+
+        // Add task form submission
+        document.getElementById('add-task-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const taskId = document.getElementById('task-id').value.trim().toLowerCase();
+            const taskName = document.getElementById('task-name').value.trim();
+            const taskDomain = document.getElementById('task-domain').value;
+            const taskDescription = document.getElementById('task-description').value.trim();
+
+            console.log('Form data:', { taskId, taskName, taskDomain, taskDescription });
+
+            axios.post('/api/add-task', {
+                task_id: taskId,
+                task_name: taskName,
+                task_domain: taskDomain,
+                task_description: taskDescription
+            })
+                .then(response => {
+                    const resultDiv = document.getElementById('add-task-result');
+                    if (response.data.exists) {
+                        resultDiv.innerHTML = '<div class="alert alert-danger">Task already exists!</div>';
+                    } else {
+                        resultDiv.innerHTML = '<div class="alert alert-success">Task added successfully!</div>';
+                    }
+                })
+                .catch(error => console.error('Error adding task:', error));
+        });
+
+        // Function to handle updating points
+        function updatePoints(event) {
+            event.preventDefault();  // Prevent page refresh
+
+            // Fetch input values from the form
+            const memberId = document.getElementById('update-member-id').value.trim();
+            const taskId = document.getElementById('update-task-name').value.trim();
+            const points = document.getElementById('updatepoints').value.trim();
+
+            // Check if all fields are filled
+            if (!memberId || !taskId || !points) {
+                document.getElementById('update-points-result').innerHTML = '<div class="alert alert-danger">Please fill in all the fields</div>';
+                return;
+            }
+
+            // Prepare the data to be sent
+            const data = {
+                member_id: memberId,
+                task_id: taskId,
+                points: points
+            };
+
+            // Make the API call to update points
+            axios.post('/api/update-points', data)
+                .then(response => {
+                    const resultDiv = document.getElementById('update-points-result');
+
+                    // Handle success or error based on server response
+                    if (response.data.success) {
+                        resultDiv.innerHTML = '<div class="alert alert-success">Points updated successfully!</div>';
+                    } else if (response.data.error) {
+                        resultDiv.innerHTML = `<div class="alert alert-danger">${response.data.error}</div>`;
+                    } else {
+                        resultDiv.innerHTML = '<div class="alert alert-danger">Unknown error occurred while updating points</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating points:', error);
+                    document.getElementById('update-points-result').innerHTML = '<div class="alert alert-danger">An error occurred while updating points</div>';
+                });
         }
 
-        function nextSlide() {
-            slideIndex = (slideIndex + 1) % slides.length;
-            showSlides(slideIndex);
-        }
+        // Event listener for form submission
+        document.getElementById('update-points-form').addEventListener('submit', updatePoints);
 
-        function prevSlide() {
-            slideIndex = (slideIndex - 1 + slides.length) % slides.length;
-            showSlides(slideIndex);
-        }
+        // Event listener for task domain selection
+        document.getElementById('update-task-domain').addEventListener('change', function () {
+            const domain = this.value;
+            const taskDropdown = document.getElementById('update-task-name');
 
-        // Navigation button event listeners
-        document.getElementById('nextBtn').addEventListener('click', nextSlide);
-        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+            // If domain is selected, fetch tasks for the domain
+            if (domain) {
+                axios.get(`/api/tasks-by-domain?domain=${encodeURIComponent(domain)}`)
+                    .then(response => {
+                        const tasks = response.data.tasks;
+                        taskDropdown.innerHTML = '<option value="">Select Task</option>';
 
-        // Automatic slideshow
-        setInterval(nextSlide, 8000); // Change slide every 8 seconds
-        showSlides(slideIndex); // Start by showing the first slide
+                        // Populate the task dropdown with the tasks for the selected domain
+                        tasks.forEach(task => {
+                            const option = document.createElement('option');
+                            option.value = task.task_id;
+                            option.textContent = task.task_name;
+                            taskDropdown.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching tasks:', error));
+            } else {
+                taskDropdown.innerHTML = '<option value="">Select Task</option>';
+            }
+        });
+
+        // Optional: You can also handle the submission using a button click event if needed
+        document.getElementById('submit-update-points').addEventListener('click', updatePoints);
+
+
+
     </script>
 </body>
 
